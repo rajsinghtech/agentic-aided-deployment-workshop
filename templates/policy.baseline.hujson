@@ -1,0 +1,58 @@
+{
+  "groups": {
+    "group:workshop-team": [
+      "TEAMMATE_LOGIN",
+    ],
+  },
+
+  "tagOwners": {
+    "tag:ci-deployer": ["autogroup:admin"],
+    "tag:demo-host":   ["autogroup:admin"],
+  },
+
+  "autoApprovers": {
+    "services": {
+      "svc:workshop-app": ["tag:demo-host"],
+    },
+  },
+
+  "grants": [
+    {
+      "src": ["tag:ci-deployer"],
+      "dst": ["tag:demo-host"],
+      "ip":  ["tcp:22"],
+    },
+    {
+      "src": ["AUTHOR_LOGIN"],
+      "dst": ["svc:workshop-app"],
+      "ip":  ["tcp:443"],
+    },
+  ],
+
+  "ssh": [
+    {
+      "action": "accept",
+      "src":    ["tag:ci-deployer"],
+      "dst":    ["tag:demo-host"],
+      "users":  ["deploy"],
+    },
+  ],
+
+  "tests": [
+    {
+      "src":    "tag:ci-deployer",
+      "proto":  "tcp",
+      "accept": ["tag:demo-host:22"],
+      "deny":   ["tag:demo-host:23", "svc:workshop-app:443"],
+    },
+    {
+      "src":    "AUTHOR_LOGIN",
+      "accept": ["svc:workshop-app:443"],
+      "deny":   ["tag:demo-host:22"],
+    },
+    {
+      "src":  "TEAMMATE_LOGIN",
+      "deny": ["svc:workshop-app:443", "tag:demo-host:22"],
+    },
+  ],
+}

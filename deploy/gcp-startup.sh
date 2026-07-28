@@ -20,7 +20,8 @@ systemctl enable --now tailscaled
 
 if ! tailscale status --json | grep -q '"BackendState": "Running"'; then
   tailscale up \
-    --auth-key="__TS_AUTH_KEY__" \
+    --client-id="__TS_HOST_CLIENT_ID__?ephemeral=false&preauthorized=true" \
+    --audience="__TS_HOST_AUDIENCE__" \
     --hostname=agentic-workshop-host \
     --advertise-tags=tag:demo-host \
     --ssh \
