@@ -36,6 +36,8 @@ jobs:
           gzip --stdout --decompress /tmp/workshop-app.tgz |
             tailscale ssh "deploy@${TS_DEPLOY_HOST}" /home/deploy/bin/activate-workshop-release
       - name: Verify private service
+        env:
+          TS_DEPLOY_HOST: ${{ vars.TS_DEPLOY_HOST }}
         run: |
-          curl --fail --show-error --silent --retry 20 --retry-all-errors --retry-delay 2 \
-            "https://workshop-app.rajsingh.ts.net/health"
+          tailscale ssh "deploy@${TS_DEPLOY_HOST}" \
+            curl --fail --show-error --silent http://127.0.0.1:3000/health
