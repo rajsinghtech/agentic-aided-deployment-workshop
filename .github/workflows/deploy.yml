@@ -28,14 +28,23 @@ jobs:
           oauth-client-id: ${{ vars.TS_CLIENT_ID }}
           audience: ${{ vars.TS_AUDIENCE }}
           tags: tag:ci-deployer
-          ping: ${{ vars.TS_DEPLOY_HOST }}
-      - name: Deploy over Tailscale SSH
-        env:
-          TS_DEPLOY_HOST: ${{ vars.TS_DEPLOY_HOST }}
+      - name: Start the reviewed application
         run: |
-          gzip --stdout --decompress /tmp/workshop-app.tgz |
-            tailscale ssh "deploy@${TS_DEPLOY_HOST}" /home/deploy/bin/activate-workshop-release
+          nohup node src/server.js >/tmp/workshop-app.log 2>&1 &
+          echo $! >/tmp/workshop-app.pid
+          curl --fail --retry 20 --retry-delay 1 http://127.0.0.1:3000/health
+      - name: Advertise the private named service
+        run: |
+          tailscale serve --service=svc:workshop-app --https=443 127.0.0.1:3000
+          tailscale serve status --json
       - name: Verify private service
-        env:
-          TS_SERVICE_URL: ${{ vars.TS_SERVICE_URL }}
-        run: curl --fail --show-error --silent --retry 12 --retry-delay 2 "${TS_SERVICE_URL}/health"
+        run: curl --fail --show-error --silent --retry 20 --retry-delay 2 "https://workshop-app.rajsingh.ts.net/health"
+      - name: Keep the workshop service available
+        timeout-minutes: 180
+        run: |
+          echo "Service is live at https://workshop-app.rajsingh.ts.net"
+          while kill -0 "$(cat /tmp/workshop-app.pid)"; do
+            sleep 30
+          done
+          cat /tmp/workshop-app.log
+          exit 1
