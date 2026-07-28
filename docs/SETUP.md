@@ -4,9 +4,10 @@ The supplied Tailscale workload identity must be configured for the exact GitHub
 
 - `TS_CLIENT_ID`
 - `TS_AUDIENCE`
+- `TS_DEPLOY_HOST=agentic-workshop-host`
 - The service URL is `https://workshop-app.rajsingh.ts.net`.
 
-For the self-contained workshop path, the GitHub-hosted runner is the ephemeral deployment machine. It runs the reviewed application on loopback and advertises `svc:workshop-app` for up to three hours. This deliberately avoids a public URL and every stored deployment credential.
+The target is a persistent Google Cloud VM in a dedicated network with no inbound firewall rules. GitHub Actions reaches it only as an ephemeral `tag:ci-deployer` node over Tailscale SSH. The application binds to loopback and `svc:workshop-app` provides the stable HTTPS name.
 
 A Docker-based host script remains in `deploy/activate-workshop-release` for the follow-on persistent-host exercise.
 
