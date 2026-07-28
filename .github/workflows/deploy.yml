@@ -35,7 +35,7 @@ jobs:
           curl --fail --retry 20 --retry-all-errors --retry-delay 1 http://127.0.0.1:3000/health
       - name: Advertise the private named service
         run: |
-          tailscale serve --service=svc:workshop-app --https=443 127.0.0.1:3000
+          sudo tailscale serve --service=svc:workshop-app --https=443 127.0.0.1:3000
           tailscale serve status --json
       - name: Verify private service
         run: curl --fail --show-error --silent --retry 20 --retry-delay 2 "https://workshop-app.rajsingh.ts.net/health"
