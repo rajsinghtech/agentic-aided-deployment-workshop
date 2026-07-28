@@ -32,7 +32,7 @@ jobs:
         run: |
           nohup node src/server.js >/tmp/workshop-app.log 2>&1 &
           echo $! >/tmp/workshop-app.pid
-          curl --fail --retry 20 --retry-delay 1 http://127.0.0.1:3000/health
+          curl --fail --retry 20 --retry-all-errors --retry-delay 1 http://127.0.0.1:3000/health
       - name: Advertise the private named service
         run: |
           tailscale serve --service=svc:workshop-app --https=443 127.0.0.1:3000
