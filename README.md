@@ -69,7 +69,7 @@ You need:
 - A GitHub account with Actions enabled.
 - A Google Cloud project with billing and Compute Engine enabled.
 - `git`, `gh`, `gcloud`, `curl`, and `jq` installed locally.
-- Permission to create a GitHub OIDC trust credential in Tailscale.
+- Permission to create GitHub Actions and Google Cloud OIDC trust credentials in Tailscale.
 
 The example uses Google Cloud, but the deployment host can be any persistent Linux machine that can make outbound connections and run Docker and Tailscale.
 
@@ -149,7 +149,7 @@ These headers are not trustworthy when a client can reach the backend directly. 
 
 ## Step 3: Create the Baseline Tailnet Policy
 
-Start from `templates/policy.baseline.hujson` in the policy repository. Replace:
+Copy `templates/policy.baseline.hujson` from this application repository into the private policy repository as `policy.hujson`. Replace:
 
 - `AUTHOR_LOGIN` with `$TS_AUTHOR`.
 - `TEAMMATE_LOGIN` with `$TS_TEAMMATE`.
@@ -173,8 +173,6 @@ Define `svc:workshop-app` in **Admin console > Services**:
 - Name: `workshop-app`
 - Port: `tcp:443`
 - Description: `Agentic-aided private deployment workshop`
-
-You can also use the Tailscale Services API if your credential permits it. The stable URL will be:
 
 ```text
 https://workshop-app.<tailnet-dns-name>.ts.net
@@ -431,7 +429,7 @@ A Tailscale policy denial normally looks like a failed connection, not an applic
 
 ## Step 9: Open the Team-Access Pull Request
 
-Copy `templates/policy.team-access.hujson` over `policy.hujson`, or make the equivalent small change:
+Copy `templates/policy.team-access.hujson` from this application repository over `policy.hujson` in the private policy repository, or make the equivalent small change:
 
 ```diff
  "groups": {
@@ -534,9 +532,7 @@ Check:
 
 Refresh the policy page and verify the tailnet ID. The policy API returns an ETag and request ID that can be used as authoritative evidence:
 
-```bash
 Use the policy workflow's successful apply run and the policy shown in the admin console as evidence. Confirm the workflow used the protected-branch apply identity, not the pull-request test identity.
-```
 
 ### A private policy repository does not start GitHub Actions jobs
 
