@@ -147,12 +147,9 @@ curl \
 
 These headers are not trustworthy when a client can reach the backend directly. In the deployed design, only Tailscale Serve can reach the loopback backend and it removes spoofed identity headers before adding verified ones.
 
-## Step 3: Create the Baseline Tailnet Policy
+## Step 3: Configure the Baseline Tailnet Policy
 
-Copy `templates/policy.baseline.hujson` from this application repository into the private policy repository as `policy.hujson`. Replace:
-
-- `AUTHOR_LOGIN` with `$TS_AUTHOR`.
-- `TEAMMATE_LOGIN` with `$TS_TEAMMATE`.
+Open `policy.hujson` in your private policy repository and replace the example author and teammate login names with `$TS_AUTHOR` and `$TS_TEAMMATE`.
 
 The baseline must contain:
 
@@ -429,7 +426,7 @@ A Tailscale policy denial normally looks like a failed connection, not an applic
 
 ## Step 9: Open the Team-Access Pull Request
 
-Copy `templates/policy.team-access.hujson` from this application repository over `policy.hujson` in the private policy repository, or make the equivalent small change:
+Edit the existing `policy.hujson`. Make one small, reviewable change:
 
 ```diff
  "groups": {

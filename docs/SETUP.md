@@ -5,6 +5,7 @@ Use the root `README.md` for full commands. This checklist is for rehearsal.
 ## Tailnet
 
 - [ ] Exact author and teammate Tailscale login names recorded.
+- [ ] Example logins in the policy repository replaced with those exact values.
 - [ ] `tag:ci-deployer` and `tag:demo-host` exist in `tagOwners`.
 - [ ] Baseline policy validates and is applied.
 - [ ] Baseline lets the author reach `svc:workshop-app:443`.
